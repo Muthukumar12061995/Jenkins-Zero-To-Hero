@@ -42,23 +42,29 @@ pipeline
       }
     }
     stage('Update Deployment File') {
-    environment {
-        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
-        GIT_USER_NAME = "Muthukumar12061995"
-    }
-    steps {
-        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-            sh '''
-                git config --global user.name=muthu.mac
-                git config --global user.email=kumarmuthu.m12@gmail.com
-                BUILD_NUMBER=${BUILD_NUMBER}
-                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-            '''
+      environment {
+          GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+          GIT_USER_NAME = "Muthukumar12061995"
+      }
+      steps {
+          withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+          script {
+              // Set global Git configurations
+              sh 'git config --global user.name "muthu.mac"'
+              sh 'git config --global user.email "kumarmuthu.m12@gmail.com"'
+
+              // Replace image tag in deployment.yml
+              sh "sed -i 's/replaceImageTag/${BUILD_NUMBER}/g' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+
+              // Git operations
+              sh '''
+                  git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                  git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                  git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+              '''
+          }
         }
-    }
+      }
     }
    }
 }
