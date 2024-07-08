@@ -54,7 +54,7 @@ pipeline
               sh 'git config --global user.email "kumarmuthu.m12@gmail.com"'
 
               // Replace image tag in deployment.yml
-              sh "sed -i 's/replaceImageTag/${BUILD_NUMBER}/g' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml"
+              sh "sed -i 's/replaceImageTag/${BUILD_NUMBER}/g' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/."
 
               // Git operations
               sh '''
