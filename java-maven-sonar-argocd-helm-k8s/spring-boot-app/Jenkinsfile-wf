@@ -42,7 +42,7 @@ stages
       environment {
         DOCKER_IMAGE = "mk1206/ultimate-cicd:${BUILD_NUMBER}"
         //DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
-        REGISTRY_CREDENTIALS_ID = credentials('dockerhub')
+        REGISTRY_CREDENTIALS_ID = 'dockerhub'
       }
       steps
       {
