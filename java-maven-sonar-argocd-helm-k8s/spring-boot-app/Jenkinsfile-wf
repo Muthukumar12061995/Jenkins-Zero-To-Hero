@@ -8,7 +8,7 @@ pipeline {
     }
     environment 
     {
-        DOCKER_REGISTRY_CREDENTIAL = 'dockerhub'
+        DOCKER_REGISTRY_CREDENTIAL = credentials('dockerhub')
     }
     stages 
     {
