@@ -1,0 +1,43 @@
+pipeline {
+    agent {
+        docker {
+            image "abhishekf5/maven-abhishek-docker-agent:v1"
+            // Mount host docker sock to access docker daemon
+            args "--user root -v /var/run/docker.sock:/var/run/docker.sock"
+        }
+    }
+}
+
+stages 
+{
+    stage('checkout')
+    {
+        steps 
+        {
+            sh 'echo "ready to checkout'
+            git branch: 'main' \
+            url: 'https://github.com/Muthukumar12061995/Jenkins-Zero-To-Hero.git'
+        }
+    }
+
+    stage('build')
+    {
+        steps
+        {
+            sh 'echo "maven to start build"'
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
+            sh 'mvn clean package'
+        }
+    }
+
+    stage('code-review')
+    {
+        steps
+        {
+            sh 'echo static-code-review'
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
+            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN \
+            -Dsonar.host.url=${SONAR_URL}'
+        }
+    }
+}
