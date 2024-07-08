@@ -54,6 +54,7 @@ resource "aws_route_table_association" "public-route-asso" {
 
 variable "public_key" {
   default = "~/.ssh/ec2.pub"
+  sensitive = true
 }
 resource "aws_key_pair" "ssh-key" {
   key_name = "ec2-ssh"
