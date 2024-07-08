@@ -12,8 +12,8 @@ stages
     {
         steps 
         {
-            sh 'echo "ready to checkout'
-            //git branch: 'main' url: 'https://github.com/Muthukumar12061995/Jenkins-Zero-To-Hero.git'
+            sh 'echo "ready to checkout"'
+            git branch: 'main', url: 'https://github.com/Muthukumar12061995/Jenkins-Zero-To-Hero.git'
         }
     }
 
@@ -22,8 +22,7 @@ stages
         steps
         {
             sh 'echo "maven to start build"'
-            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
-            sh 'mvn clean package'
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
         }
     }
 
@@ -33,9 +32,7 @@ stages
         {
           withCredentials([string(credentialsId: 'sonarqube',variable: 'SONAR_AUTH_TOKEN')]){
             sh 'echo static-code-review'
-            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
-            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN \
-            -Dsonar.host.url=http://3.86.185.37:9000/'
+            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=http://3.86.185.37:9000/'
           }
         }
     }
