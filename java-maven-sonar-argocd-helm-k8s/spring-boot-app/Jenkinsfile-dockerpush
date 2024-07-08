@@ -7,12 +7,12 @@ pipeline
         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
    }
-  //  environment 
-  //  {
-  //    REGISTRY = "mk1206/ultimate-cicd"
-  //    REGISTRY_CREDENTIALS = 'docker-cred'
-  //    DOCKER_IMAGE = "mk1206/ultimate-cicd:${BUILD_NUMBER}"
-  //  }
+   environment 
+   {
+     REGISTRY = "mk1206/ultimate-cicd"
+     REGISTRY_CREDENTIALS = 'docker-cred'
+     DOCKER_IMAGE = "mk1206/ultimate-cicd:${BUILD_NUMBER}"
+   }
    stages
    {
     stage('build')
@@ -25,12 +25,11 @@ pipeline
     }
     stage('dockerization')
     {
-      environment 
-      {
-        REGISTRY = "mk1206/ultimate-cicd"
-        REGISTRY_CREDENTIALS = 'docker-cred'
-        DOCKER_IMAGE = "${REGISTRY}:${BUILD_NUMBER}"
-      }
+      // environment {
+      //   DOCKER_IMAGE = "mk1206/ultimate-cicd:${BUILD_NUMBER}"
+      //   // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
+      //   REGISTRY_CREDENTIALS = credentials('docker-cred')
+      // }
       steps {
         script {
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
@@ -41,7 +40,5 @@ pipeline
         }
       }
     }
-
    }
 }
-
