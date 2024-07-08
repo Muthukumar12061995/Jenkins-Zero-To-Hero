@@ -34,10 +34,12 @@ stages
     {
         steps
         {
+          withCredentials([string(credentialsId: 'sonarqube',variable: 'SONAR_AUTH_TOKEN')]){
             sh 'echo static-code-review'
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app'
             sh 'mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN \
-            -Dsonar.host.url=${SONAR_URL}'
+            -Dsonar.host.url=http://3.86.185.37:9000/'
+          }
         }
     }
 }
