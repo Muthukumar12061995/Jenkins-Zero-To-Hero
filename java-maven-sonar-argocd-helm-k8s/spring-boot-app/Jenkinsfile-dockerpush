@@ -7,12 +7,12 @@ pipeline
         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
    }
-  //  environment 
-  //  {
-  //    REGISTRY = "mk1206/ultimate-cicd"
-  //    REGISTRY_CREDENTIALS = 'docker-cred'
-  //    DOCKER_IMAGE = "${REGISTRY}:${BUILD_NUMBER}"
-  //  }
+   environment 
+   {
+     REGISTRY = "mk1206/ultimate-cicd"
+     REGISTRY_CREDENTIALS = 'docker-cred'
+     DOCKER_IMAGE = "${REGISTRY}:${BUILD_NUMBER}"
+   }
    stages
    {
     stage('build')
@@ -25,12 +25,12 @@ pipeline
     }
     stage('dockerization')
     {
-      environment 
-      {
-        REGISTRY = "mk1206/ultimate-cicd"
-        REGISTRY_CREDENTIALS = 'docker-cred'
-        DOCKER_IMAGE = "${REGISTRY}:${BUILD_NUMBER}"
-      }
+      // environment 
+      // {
+      //   REGISTRY = "mk1206/ultimate-cicd"
+      //   REGISTRY_CREDENTIALS = 'docker-cred'
+      //   DOCKER_IMAGE = "${REGISTRY}:${BUILD_NUMBER}"
+      // }
       steps {
         script {
             sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
@@ -40,6 +40,23 @@ pipeline
             }
         }
       }
+    }
+    stage('Update Deployment File') {
+    environment {
+        GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
+        GIT_USER_NAME = "Muthukumar12061995"
+    }
+    steps {
+        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+            sh '''
+                BUILD_NUMBER=${BUILD_NUMBER}
+                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+            '''
+        }
+    }
     }
    }
 }
